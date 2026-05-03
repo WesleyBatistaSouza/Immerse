@@ -20,13 +20,12 @@ import Import from "./pages/import.jsx";
 import Library from "./pages/library.jsx";
 import SoundPage, { MiniPlayer } from "./pages/sons.jsx";
 import Settings from "./pages/settings.jsx";
-import Achievements from "./pages/Conquest.jsx";
+import Achievements from "./pages/achievements.jsx";
 
 import themes from "./data/data_themes.jsx";
 import livrosEstaticos from "./data/data_books.jsx";
 
 import { useLibraryEngine } from "./hooks/useLibraryEngine";
-import Conquest from "./pages/conquest.jsx";
 
 function App() {
   const [settings, setSettings] = useState(() => {
@@ -157,9 +156,9 @@ function App() {
     try {
       await addBook(newBook);
 
-      await Conquest("first_import");
-      await Conquest("book_collector");
-      await Conquest("library_master");
+      await Achievements("first_import");
+      await Achievements("book_collector");
+      await Achievements("library_master");
 
       notifySuccess("Livro adicionado com sucesso!");
     } catch (error) {
@@ -176,7 +175,7 @@ function App() {
       const becameFavorite = await toggleFavorite(id);
 
       if (becameFavorite) {
-        await Conquest("first_favorite");
+        await Achievements("first_favorite");
       }
     } catch (error) {
       console.error(error);
@@ -205,9 +204,9 @@ function App() {
       const completed = await updateProgress(bookId, currentPage, totalPages);
 
       if (completed) {
-        await Conquest("first_finish");
-        await Conquest("bookworm");
-        await Conquest("reading_master");
+        await Achievements("first_finish");
+        await Achievements("bookworm");
+        await Achievements("reading_master");
       }
     } catch (error) {
       console.error(error);

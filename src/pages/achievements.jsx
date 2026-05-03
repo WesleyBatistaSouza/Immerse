@@ -3,7 +3,7 @@ import { Trophy, Lock, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { db } from "../data_base/db.jsx";
 
-export default function Conquest() {
+export default function Achievements() {
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
