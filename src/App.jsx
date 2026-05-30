@@ -4,7 +4,6 @@ import {
   Plus,
   Settings as SettingsIcon,
   ListMusic,
-  X,
   Trophy,
 } from "lucide-react";
 
@@ -275,18 +274,11 @@ function App() {
       <main className={`flex-1 flex flex-col items-center transition-all duration-700 ${isReading ? "p-0" : "p-6 pb-32"}`}>
         {isReading ? (
           <div className="animate-in zoom-in-95 min-h-screen w-full flex flex-col items-center bg-[#0f1115]">
-            <button
-              onClick={() => setIsReading(false)}
-              className="fixed top-6 left-6 text-white hover:text-blue-400 flex items-center gap-3 text-xs font-bold tracking-wider z-[60] bg-black/80 backdrop-blur-md p-3 px-6 rounded-full border border-white/20 uppercase cursor-pointer transition-all hover:scale-105 shadow-xl"
-            >
-              <X size={18} />
-              Fechar
-            </button>
-
             {currentBook && (
               <Reader
                 book={currentBook}
                 onProgressUpdate={handleUpdateProgress}
+                onClose={() => setIsReading(false)}
               />
             )}
           </div>

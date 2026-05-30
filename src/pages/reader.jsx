@@ -1,30 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ZoomIn,
-  ZoomOut,
-  Play,
-  Pause,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
+  import.meta.url,
 ).toString();
 
-export default function Reader({ book, onProgressUpdate }) {
+export default function Reader({ book, onProgressUpdate, onClose }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(book?.currentPage || 1);
   const [scale, setScale] = useState(1.05);
-  const [autoPlay, setAutoPlay] = useState(false);
 
-  const autoTimer = useRef(null);
   const touchStartX = useRef(0);
 
   if (!book) {
@@ -77,10 +68,6 @@ export default function Reader({ book, onProgressUpdate }) {
         case "ArrowDown":
           setScale((s) => Math.max(0.7, s - 0.1));
           break;
-        case " ":
-          e.preventDefault();
-          setAutoPlay((prev) => !prev);
-          break;
         default:
           break;
       }
@@ -107,32 +94,9 @@ export default function Reader({ book, onProgressUpdate }) {
     if (diff < -50) changePage(-1);
   };
 
-  /*
-  ==========================
-  AUTO LEITURA INTELIGENTE
-  média ~45s por página literária
-  ==========================
-  */
-  useEffect(() => {
-    if (autoPlay && numPages) {
-      autoTimer.current = setInterval(() => {
-        setPageNumber((prev) => {
-          if (prev >= numPages) {
-            setAutoPlay(false);
-            clearInterval(autoTimer.current);
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, 45000);
-    }
-
-    return () => clearInterval(autoTimer.current);
-  }, [autoPlay, numPages]);
-
   const progress = numPages ? (pageNumber / numPages) * 100 : 0;
 
-  return (
+    return (
     <div
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -175,14 +139,18 @@ export default function Reader({ book, onProgressUpdate }) {
           <ZoomIn size={18} />
         </button>
 
+        {/* botao de fechar no menu de nav do pdf */}
         <div className="h-6 w-px bg-white/10" />
 
-        <button
-          onClick={() => setAutoPlay(!autoPlay)}
-          className={`p-2 rounded-xl text-white ${autoPlay ? "bg-blue-600" : "hover:bg-white/10"}`}
+        <div
+          className={`p-2 hover:bg-white/10 rounded-xl text-white cursor-pointer transition-all hover:scale-105`}
         >
-          {autoPlay ? <Pause size={18} /> : <Play size={18} />}
-        </button>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-blue-400 flex items-center gap-3 text-xs font-bold tracking-wider z-[60] bg-black/80 backdrop-blur-md p-3 px-6 rounded-full  border-white/20 uppercase cursor-pointer transition-all border hover:scale-105 shadow-xl">
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
       <div className="w-[300px] md:w-[500px] h-1 bg-white/10 rounded-full mb-6 overflow-hidden">
